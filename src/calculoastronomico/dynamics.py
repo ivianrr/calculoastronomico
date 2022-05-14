@@ -1,0 +1,1 @@
+"""Rutinas de dinámica."""
