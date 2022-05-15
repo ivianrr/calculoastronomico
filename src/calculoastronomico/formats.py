@@ -30,6 +30,7 @@ def degree_to_ddmmss(degree):
 def degree_to_ddmmss_compact(degree):
     """Convierte grados a formato compacto dd.mmss"""
     sig,d,m,s=degree_to_ddmmss(degree)
+    print("-compact return args",sig,d,m,s)
     return sig*(d+m*1e-2+s*1e-4)
 
 
