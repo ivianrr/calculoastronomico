@@ -52,4 +52,7 @@ def ddmmss_compact_to_degree(x):
         s -= 40
     return sig*(d+(m+s/60.)/60.)
 
-# scale_angle
+
+def scale_angle(a):
+    """sitúa un ángulo en [0,2p)"""
+    return a-2*PI*math.floor(a/(2*PI))
