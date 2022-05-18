@@ -2,7 +2,6 @@
 
 import math
 
-from numpy import mat
 from calculoastronomico.constant import *
 
 
