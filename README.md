@@ -9,11 +9,11 @@
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/calculoastronomico)
 -->
 
-# calculoastronomico
+# Curso de cálculo astronomico
 
-> Add a short description here!
+> Codigo con rutinas para cálculo astronómico escritas en python implementando las técnicas y algoritmos estudiados en el curso.
 
-A longer description of your project goes here...
+Siguiendo el temario desarrollado a lo largo del curso de cálculo astronómico de la [FAAE](https://www.federacionastronomica.es/index.php/pro-am/formacion-y-divulgacion/300-curso-de-calculo-astronomico), se irán implementando en un paquete las rutinas y funciones dentro del directorio `src/calculoastronomico/`. Los programas y cuadernos de jupyter que llaman a estas rutinas se incluirán en `scripts/` y `notebooks/`, respectivamente.
 
 ## Installation
 
