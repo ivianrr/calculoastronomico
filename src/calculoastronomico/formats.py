@@ -1,6 +1,8 @@
 """Rutinas generales, formatos..."""
 
 import math
+
+from numpy import mat
 from calculoastronomico.constant import *
 
 
@@ -30,7 +32,7 @@ def degree_to_ddmmss_compact(degree):
     # some problems here with accuracy
     # performing the operation on [1.0, 40, 15, 59.99999999997101] results in 40.156, which is equivalent to 40.16 if the 6 is carried over.
     sig, d, m, s = degree_to_ddmmss(degree)
-    return sig*(d+m*1e-2+s*1e-4)
+    return sig*(d+(m+s/100)/100)
 
 
 def ddmmss_to_degree(sig, d, m, s):
@@ -54,5 +56,56 @@ def ddmmss_compact_to_degree(x):
 
 
 def scale_angle(a):
-    """sitúa un ángulo en [0,2p)"""
+    """Sitúa un ángulo en [0,2p)"""
     return a-2*PI*math.floor(a/(2*PI))
+
+#
+# Rutinas opcionales
+#
+
+
+# degree_to_ddmm: convierte grados a grados y minutos
+# degree_to_ddmm_compact: convierte grados a grados y minutos en formato compacto
+# ddmm_to_degree: convierte grados y minutos a grados
+# ddmm_compact_to_degree: misma que anterior pero en formato compacto
+
+# hour_to_radian: convierte horas a radianes
+def hour_to_radian(h):
+    """convierte horas a radianes"""
+    return h/12*PI
+
+# radian_to_hour: convierte radianes a horas
+def radian_to_hour(rad):
+    """    convierte radianes a horas"""
+    return rad*12/PI
+
+
+# degree_to_hour: convierte grados a horas
+def degree_to_hour(deg): 
+    """convierte grados a horas"""
+    return deg/15
+
+# hour_to_degree: convierte horas a grados
+def hour_to_degree(h): 
+    """convierte horas a grados"""
+    return h*15
+
+# hour_to_hhmmss: convierte horas a horas), minutos y segundoss
+# -hour_to_hhmmss_compact: misma que anterior, pero en formato compacto
+# hhmmss_to_hour: convierte horas, minutos y segundos a horas
+# -hhmmss_compact_to_hour: misma que anterior, pero en formato compacto
+# hour_to_hhmm: convierte horas a horas y minutos
+# -hour_to_hhmm_compact: misma que anterior pero en formato compacto
+# hhmm_to_hour: convierte horas y minutos a horas
+# -hhmm_compact_to_hour: misma que anterior pero en formato compacto
+
+
+# scale_hour: sitúa una hora en formato decimal en el intervalo [0,24)
+def scale_hour(h): 
+    """sitúa una hora en formato decimal en el intervalo [0,24)"""
+    return h-24*math.floor(h/24)
+
+# scale_degree: sitúa un ángulo en grados en formato decimal en el intervalo [0,360)
+def scale_degree(deg): 
+    """sitúa un ángulo en grados en formato decimal en el intervalo [0,360)"""
+    return deg-360*math.floor(deg/360)
