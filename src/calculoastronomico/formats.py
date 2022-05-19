@@ -107,6 +107,19 @@ def hhmmss_to_hour(sig, h, m, s):
     return ddmmss_to_degree(sig, h, m, s)
 
 
+# Funciones adicionales
+def hhmmss_to_ddmmss(sig, h, m, s):
+    """Convierte horas,minutos y segundos a grados minutos y segundos"""
+    hour = hhmmss_to_hour(sig, h, m, s)
+    return degree_to_ddmmss(hour_to_degree(hour))
+
+
+def ddmmss_to_hhmmss(sig, d, m, s):
+    """Convierte horas,minutos y segundos a grados minutos y segundos"""
+    deg = ddmmss_to_degree(sig, d, m, s)
+    return hour_to_hhmmss(degree_to_hour(deg))
+
+
 # -hhmmss_compact_to_hour: misma que anterior, pero en formato compacto
 # -hour_to_hhmm: convierte horas a horas y minutos
 # -hour_to_hhmm_compact: misma que anterior pero en formato compacto
