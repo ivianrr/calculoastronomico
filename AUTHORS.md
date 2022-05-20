@@ -1,3 +1,3 @@
 # Contributors
 
-* Ivan <ivianrr@gmail.com>
+* Ivan <ivanreyesrodrz@gmail.com>
