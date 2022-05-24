@@ -1,5 +1,6 @@
 """Rutinas de transformaciones."""
 import math
+from typing import List
 
 import numpy as np
 
@@ -36,6 +37,31 @@ def spherical_to_rectangular(v):
     y = r * math.sin(phi) * math.cos(theta)
     z = r * math.sin(theta)
     return [x, y, z]
+
+
+def translation(x, R):
+    """efectúa una traslación"""
+    if isinstance(x, np.ndarray) and isinstance(R, np.ndarray):
+        x1 = x - R
+    else:
+        x1 = [xi - ri for xi, ri in zip(x, R)]
+    return x1
+
+
+def rotation(n, theta, x):
+    """efectúa una rotación elemental alrededor de un eje cartesiano"""
+    # mats=np.array(
+    #     [[],[],[]],
+    #     [[],[],[]],
+    #     [[],[],[]]
+    # )
+
+    pass
+
+
+def rotation_Euler():
+    """efectúa una rotación de Euler"""
+    pass
 
 
 if __name__ == "__main__":
