@@ -1,4 +1,6 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ivianrr/calculoastronomico/main?labpath=notebooks%2F01-B3-sistemasrefterr.ipynb)
 [![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
+
 <!-- These are examples of badges you might also want to add to your README. Update the URLs accordingly.
 [![Built Status](https://api.cirrus-ci.com/github/<USER>/calculoastronomico.svg?branch=main)](https://cirrus-ci.com/github/<USER>/calculoastronomico)
 [![ReadTheDocs](https://readthedocs.org/projects/calculoastronomico/badge/?version=latest)](https://calculoastronomico.readthedocs.io/en/stable/)
