@@ -127,7 +127,7 @@ def terrestrial_coordinates(lon, lat, h, dimensionless=False, fulloutput=False):
     """
 
     C = (c.r_e / sqrt(1 - c.e_t**2 * sin(lat) ** 2) + h) * cos(lat)
-    S = (c.r_e * (1 - c.e_t) / sqrt(1 - c.e_t**2 * sin(lat) ** 2) + h) * sin(lat)
+    S = (c.r_e * (1 - c.e_t**2) / sqrt(1 - c.e_t**2 * sin(lat) ** 2) + h) * sin(lat)
 
     R = [C * cos(lon), C * sin(lon), S]
 
