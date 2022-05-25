@@ -1,5 +1,6 @@
 """Rutinas de transformaciones."""
 import math
+from math import cos, sin
 from typing import List
 
 import numpy as np
@@ -40,7 +41,16 @@ def spherical_to_rectangular(v):
 
 
 def translation(x, R):
-    """efectúa una traslación"""
+    """
+    Efectúa una traslación en el espacio
+
+    Args:
+        x: Vector original en O
+        R: Posicion de O' respecto a O
+
+    Returns:
+        Vector respecto a O'
+    """
     if isinstance(x, np.ndarray) and isinstance(R, np.ndarray):
         x1 = x - R
     else:
@@ -49,19 +59,53 @@ def translation(x, R):
 
 
 def rotation(n, theta, x):
-    """efectúa una rotación elemental alrededor de un eje cartesiano"""
-    # mats=np.array(
-    #     [[],[],[]],
-    #     [[],[],[]],
-    #     [[],[],[]]
-    # )
+    """
+    Efectúa una rotación elemental pasiva alrededor de un eje cartesiano
 
-    pass
+    Args:
+        n: Eje  cartesiano para la rotación
+        theta: Ángulo de la rotación
+        X: Vector original
+
+    Returns:
+        Vector en el sistema de referencia rotado
+    """
+    x1 = x.copy()
+    if n == 1:
+        x1[0] = x[0]
+        x1[1] = x[1] * cos(theta) + x[2] * sin(theta)
+        x1[2] = -x[1] * sin(theta) + x[2] * cos(theta)
+    elif n == 2:
+        x1[0] = x[0] * cos(theta) - x[2] * sin(theta)
+        x1[1] = x[1]
+        x1[2] = x[0] * sin(theta) + x[2] * cos(theta)
+    elif n == 3:
+        x1[0] = x[0] * cos(theta) + x[1] * sin(theta)
+        x1[1] = -x[0] * sin(theta) + x[1] * cos(theta)
+        x1[2] = x[2]
+    else:
+        raise ValueError(f"Cant perform a rotation around axis {n}!")
+
+    return x1
 
 
-def rotation_Euler():
-    """efectúa una rotación de Euler"""
-    pass
+def rotation_Euler(phi, xi, zeta, x):
+    """
+    Efectúa una rotación de Euler
+
+    Args:
+        phi: Primer ángulo de Euler
+        xi: Segundo ángulo de Euler
+        zeta: Tercer ángulo de Euler
+        x: Coponentes del vector originales
+
+    Returns:
+        Componentes del vector en el sistema de referencia rotado
+    """
+    a = rotation(3, phi, x)
+    b = rotation(1, xi, a)
+    x1 = rotation(3, zeta, b)
+    return x1
 
 
 if __name__ == "__main__":
