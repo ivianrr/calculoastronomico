@@ -1,9 +1,10 @@
 """Rutinas de transformaciones."""
 import math
-from math import cos, sin
-from typing import List
+from math import cos, sin, sqrt
 
 import numpy as np
+
+import calculoastronomico.constant as c
 
 
 def rectangular_to_spherical(v):
@@ -106,6 +107,38 @@ def rotation_Euler(phi, xi, zeta, x):
     b = rotation(1, xi, a)
     x1 = rotation(3, zeta, b)
     return x1
+
+
+def terrestrial_coordinates(lon, lat, h, dimensionless=False, fulloutput=False):
+    """
+    Calcula las coordenadas de un observador en el ITRS.
+
+    Args:
+        lon: Longitud geodesica (radianes).
+        lat: Latitud geodesica (radianes).
+        h: Altura sobre el elipsoide WGS84 (m).
+        dimensionless: Si es True, el output se da en unidades del radio ecuatorial de la Tierra.
+        fulloutput: Opcional, solicitar los valores de C y S
+
+    Returns:
+        Coordenadas terrestres [X, Y, Z]
+        Si fulloutput=True, devuelve [X,Y,Z,C,S]
+
+    """
+
+    C = (c.r_e / sqrt(1 - c.e_t**2 * sin(lat) ** 2) + h) * cos(lat)
+    S = (c.r_e * (1 - c.e_t) / sqrt(1 - c.e_t**2 * sin(lat) ** 2) + h) * sin(lat)
+
+    R = [C * cos(lon), C * sin(lon), S]
+
+    if dimensionless:
+        R = [i / c.r_e for i in R]
+        C /= c.r_e
+        S /= c.r_e
+    if fulloutput:
+        return R + [C, S]
+    else:
+        return R
 
 
 if __name__ == "__main__":
