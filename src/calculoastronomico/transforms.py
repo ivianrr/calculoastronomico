@@ -16,6 +16,7 @@ def rectangular_to_spherical(v):
 
     Returns:
         Vector [theta, phi, r]
+        In most cases, [delta, alpha, 1]
     """
     x, y, z = v
     theta = math.atan(z / math.sqrt(x**2 + y**2))
@@ -30,6 +31,7 @@ def spherical_to_rectangular(v):
 
     Args:
         v: Vector [theta, phi, r]
+           In most cases, [delta, alpha, 1]
 
     Returns:
         Vector [x, y, z]
