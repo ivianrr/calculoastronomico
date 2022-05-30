@@ -5,6 +5,7 @@ from math import cos, sin, sqrt
 import numpy as np
 
 import calculoastronomico.constant as c
+from calculoastronomico.formats import degree_to_radian
 
 
 def rectangular_to_spherical(v):
@@ -141,6 +142,70 @@ def terrestrial_coordinates(lon, lat, h, dimensionless=False, fulloutput=False):
         return R + [C, S]
     else:
         return R
+
+
+def equatorial_to_ecliptic(x, eps=None):
+    """
+    Transforma de coordenadas ecuatoriales a eclípticas.
+
+    Args:
+        x: Vector en coordenadas ecuatoriales.
+        eps[opt]: Oblicuidad de la eclíptica media o verdadera (radianes).
+
+    Returns:
+        Vector en coordenadas eclipticas.
+    """
+    if eps is None:
+        eps = degree_to_radian(23.5)
+    x1 = rotation(1, eps, x)
+    return x1
+
+
+def ecliptic_to_equatorial(x, eps=None):
+    """
+    Transforma de coordenadas eclípticas a ecuatoriales.
+
+    Args:
+        x: Vector en coordenadas eclipticas.
+        eps[opt]: Oblicuidad de la eclíptica media o verdadera (radianes).
+
+    Returns:
+        Vector en coordenadas ecuatoriales.
+    """
+    if eps is None:
+        eps = degree_to_radian(23.5)
+    x1 = rotation(1, -eps, x)
+    return x1
+
+
+def equatorial_to_galactic(x):
+    """
+    Transforma de coordenadas ecuatoriales a galacticas.
+
+    Args:
+        x: Vector en coordenadas ecuatoriales.
+
+    Returns:
+        Vector en coordenadas galacticas.
+    """
+    phi, xi, zeta = c.galactic_angles
+    x1 = rotation_Euler(phi, xi, zeta, x)
+    return x1
+
+
+def galactic_to_equatorial(x):
+    """
+    Transforma de coordenadas galacticas a ecuatoriales.
+
+    Args:
+        x: Vector en coordenadas galacticas.
+
+    Returns:
+        Vector en coordenadas ecuatoriales.
+    """
+    phi, xi, zeta = c.galactic_angles
+    x1 = rotation_Euler(-zeta, -xi, -phi, x)
+    return x1
 
 
 if __name__ == "__main__":
