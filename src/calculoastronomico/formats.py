@@ -127,6 +127,16 @@ def ddmmss_to_hhmmss(sig, d, m, s):
 # -hhmm_compact_to_hour: misma que anterior pero en formato compacto
 
 
+def hhmmss_to_radian(sig, h, m, s):
+    """Transforma hhmmss directamente a radianes"""
+    return hour_to_radian(hhmmss_to_hour(sig, h, m, s))
+
+
+def ddmmss_to_radian(sig, d, m, s):
+    """Transforma ddmmss directamente a radianes"""
+    return degree_to_radian(ddmmss_to_degree(sig, d, m, s))
+
+
 # scale_hour: sitúa una hora en formato decimal en el intervalo [0,24)
 def scale_hour(h):
     """sitúa una hora en formato decimal en el intervalo [0,24)"""
