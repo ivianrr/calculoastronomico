@@ -43,6 +43,10 @@ Optional and needed only once after `git clone`:
    ```
    and checkout the configuration under `.pre-commit-config.yaml`.
    The `-n, --no-verify` flag of `git commit` can be used to deactivate pre-commit hooks temporarily.
+   For Windows, an error might appear while importin ctypes. The only solution I could find was downgrading pre-commits with a different channel.
+   ```
+   conda install -c conda-forge/label/gcc7 pre_commit
+   ```
 
 4. install [nbstripout] git hooks to remove the output cells of committed notebooks with:
    ```bash
