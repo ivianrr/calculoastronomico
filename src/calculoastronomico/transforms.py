@@ -5,7 +5,8 @@ from math import cos, sin, sqrt
 import numpy as np
 
 import calculoastronomico.constant as c
-from calculoastronomico.formats import degree_to_radian
+import calculoastronomico.formats as cf
+from calculoastronomico.formats import degree_to_radian, hour_to_radian, scale_angle
 
 
 def rectangular_to_spherical(v):
@@ -211,7 +212,7 @@ def galactic_to_equatorial(x):
 #  Algoritmo tomado de 'Astronomie Pratique et Informatique',
 #  C. Dumoulin y J.-P. Parisot.
 #  Con reforma gregoriana
-def julian_date(a,m,d,h):
+def julian_date(a, m, d, h):
     """
     Calcula la fecha juliana de una fecha gregoriana. Definimos
     fecha juliana como dia juliano -0.5 + fracción de día desde las 0h UT1 (o UTC, TT...).
@@ -238,6 +239,7 @@ def julian_date(a,m,d,h):
 
     return jd + 1720994.5 + h/24
 
+
 def split_julian_date(jd):
     """
     Divide una fecha juliana en día juliano más fracción.
@@ -249,13 +251,15 @@ def split_julian_date(jd):
         jd0: Fecha juliana a 0h UT1.
         h: Hora UT1.
     """
-    jd0=int(jd+0.5)-0.5
-    h=24*(jd-jd0)
+    jd0 = int(jd+0.5)-0.5
+    h = 24*(jd-jd0)
     return [jd0, h]
 
 # Algorithm tomado de 'Astronomie Pratique et Informatique',
 # C. Dumoulin y J.-P. Parisot.
 # Con reforma gregoriana
+
+
 def gregorian_date(jd):
     """
     Dada una fecha juliana calcula la fecha gregoriana.
@@ -273,10 +277,10 @@ def gregorian_date(jd):
     iz = int(aj1)
     f = aj1 - iz
     if (iz < 2299161):
-       aa = iz
+        aa = iz
     else:
-       ial = int((iz - 1867216.25)/36524.25)
-       aa = iz + ial - int(ial/4.0) + 1
+        ial = int((iz - 1867216.25)/36524.25)
+        aa = iz + ial - int(ial/4.0) + 1
 
     b = aa + 1524.0
     c = int((b - 122.1)/365.25)
@@ -285,22 +289,23 @@ def gregorian_date(jd):
     dm = b - d1 - int(30.60001*e) + f
 
     if (e < 13.5):
-        am=e-1
+        am = e-1
     else:
-        am=e-13
+        am = e-13
 
     if (am > 2.5):
-        an=c-4716
+        an = c-4716
     else:
-        an=c-4715
+        an = c-4715
 
     d = int(dm)
     m = am
     a = an
-    h= 24*(dm - int(dm))
+    h = 24*(dm - int(dm))
     return [a, m, d, h]
 
-def days_between_dates(a,m,d,a1,m1,d1):
+
+def days_between_dates(a, m, d, a1, m1, d1):
     """
     Calcula los dias entre dos fechas gregorianas.
 
@@ -311,12 +316,13 @@ def days_between_dates(a,m,d,a1,m1,d1):
     Returns:
         Dias de diferencia (entero).
     """
-    jd=julian_date(a,m,d,0.0)
-    jd1=julian_date(a1,m1,d1,0.0)
-    f=round(jd1-jd)
+    jd = julian_date(a, m, d, 0.0)
+    jd1 = julian_date(a1, m1, d1, 0.0)
+    f = round(jd1-jd)
     return f
 
-def day_of_week(a,m,d):
+
+def day_of_week(a, m, d):
     """
     Calcula el día de la semana.
 
@@ -326,7 +332,8 @@ def day_of_week(a,m,d):
     Returns:
         Dia de la semana, como un entero del 1 al 7.
     """
-    return round(julian_date(a,m,d,0)+0.5)%7+1
+    return round(julian_date(a, m, d, 0)+0.5) % 7+1
+
 
 def week_day_name(d):
     """
@@ -338,10 +345,90 @@ def week_day_name(d):
     Returns:
         El nombre del día.
     """
-    dl=["Lunes","Martes","Miercoles","Jueves","Viernes","Sábado","Domingo"]
+    dl = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     return dl[d-1]
 
 
+# Aoki et al. AA 105, 359 (1982)
+def greenwich_mean_sidereal_time(jd):
+    """
+    Dado un dia juliano jd, calcula la hora siderea media local en Greenwich a las 0h de UT1
+    con una expresion compatible con la Teoría de la Precesión IAU1976 y la Teoría de
+    la Nutación IAU1980.
+
+    Args:
+        jd: Dia juliano.
+
+    Returns:
+        Hora siderea local en Greenwich a las 0h UT1 (en radianes).
+    """
+    # Forzamos fracción 0.5 en jd
+    jd0, h = split_julian_date(jd)
+    # Numero de siglos julianos desde el 1 de enero de 2000 a las 12h UT1
+    T = (jd0-2451545)/36525
+    st0 = 24110.54841 + 8640184.812866*T + 0.093104*T**2 - 6.2e-6*T**3
+    r0 = cf.hour_to_radian(st0/3600)
+    r = cf.scale_angle(r)
+    return r
+
+
+def ut_to_mst(lon, jd):
+    """
+    Convierte UT1 en MST.
+
+    Args:
+        lon: Longitud geodésica (rad).
+        jd: Fecha juliana con UT1 como fracción
+
+    Returns:
+        Hora siderea media local mst (rad).
+    """
+    # Extraemos la fecha juliana jd0 y la hora UT1, h
+    jd0, h = split_julian_date(jd)
+
+    # Calculamos la hora siderea local en Greenwich a 0h de UT1
+    st0 = greenwich_mean_sidereal_time(jd0)
+
+    # Pasamos h a tiempo sidereo y sumamos contribucion de la longitud
+    f0 = st0+hour_to_radian(h*1.0027379093)+lon
+    f = scale_angle(f0)
+
+    return f
+
+def day_of_year(a,m,d):
+    """
+    Calcula el día del año.
+
+    Args:
+        a,m,d: Fecha gregoriana.
+
+    Returns:
+        Dia del año.
+    """
+    jd0=julian_date(a,1,1,0.0)
+    jd=julian_date(a,m,d,0.0)
+
+    return round(jd-jd0+1)
+
+def equatorial_to_horizontal(jd, lon, lat, x):
+    """
+    Transforma coordenadas ecuatoriales a horizontales.
+
+    Args:
+        jd: Fecha juliana (escala UT1).
+        lon: Longitud geodésica (rad).
+        lat: Latitud geodésica (rad).
+        x: Vector de posicion en coordenadas ecuatoriales (rectangulares).
+
+    Returns:
+        Vector de posición en coordenadas horizontales (rectangulares, locales).
+    NOTA: Se suponen hora y coordenadas medias.
+    """
+    mst=ut_to_mst(lon, jd)
+
+    x1=rotation_Euler(mst+c.PI/2,c.PI/2-lat,-c.PI/2,x)
+
+    return x1
 
 if __name__ == "__main__":
     rec = [1, 0, -1]
