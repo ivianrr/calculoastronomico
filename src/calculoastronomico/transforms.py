@@ -208,6 +208,141 @@ def galactic_to_equatorial(x):
     return x1
 
 
+#  Algoritmo tomado de 'Astronomie Pratique et Informatique',
+#  C. Dumoulin y J.-P. Parisot.
+#  Con reforma gregoriana
+def julian_date(a,m,d,h):
+    """
+    Calcula la fecha juliana de una fecha gregoriana. Definimos
+    fecha juliana como dia juliano -0.5 + fracción de día desde las 0h UT1 (o UTC, TT...).
+
+    Args:
+        a: Año.
+        m: Mes.
+        d: Día.
+        h: Hora, en formato decimal.
+
+    Returns:
+        Fecha juliana.
+    """
+    if (m < 3):
+        a = a - 1
+        m = m + 12
+
+    jd = int(365.25*a)
+    jd = jd + int(30.6001*(m+1)) + d
+    qq = a + m/100.0 + d/1e4
+    if (qq > 1582.10145):
+        ib = int(a/100.0)
+        jd = jd + 2 - ib + int(ib/4.0)
+
+    return jd + 1720994.5 + h/24
+
+def split_julian_date(jd):
+    """
+    Divide una fecha juliana en día juliano más fracción.
+
+    Args:
+        jd: Fecha juliana.
+
+    Returns:
+        jd0: Fecha juliana a 0h UT1.
+        h: Hora UT1.
+    """
+    jd0=int(jd+0.5)-0.5
+    h=24*(jd-jd0)
+    return [jd0, h]
+
+# Algorithm tomado de 'Astronomie Pratique et Informatique',
+# C. Dumoulin y J.-P. Parisot.
+# Con reforma gregoriana
+def gregorian_date(jd):
+    """
+    Dada una fecha juliana calcula la fecha gregoriana.
+
+    Args:
+        jd: Fecha juliana.
+
+    Returns:
+        a: Año.
+        m: Mes.
+        d: Día.
+        h: Hora, en formato decimal.
+    """
+    aj1 = jd + 0.5
+    iz = int(aj1)
+    f = aj1 - iz
+    if (iz < 2299161):
+       aa = iz
+    else:
+       ial = int((iz - 1867216.25)/36524.25)
+       aa = iz + ial - int(ial/4.0) + 1
+
+    b = aa + 1524.0
+    c = int((b - 122.1)/365.25)
+    d1 = int(365.25*c)
+    e = int((b - d1)/30.60001)
+    dm = b - d1 - int(30.60001*e) + f
+
+    if (e < 13.5):
+        am=e-1
+    else:
+        am=e-13
+
+    if (am > 2.5):
+        an=c-4716
+    else:
+        an=c-4715
+
+    d = int(dm)
+    m = am
+    a = an
+    h= 24*(dm - int(dm))
+    return [a, m, d, h]
+
+def days_between_dates(a,m,d,a1,m1,d1):
+    """
+    Calcula los dias entre dos fechas gregorianas.
+
+    Args:
+        a,m,d: Primera fecha.
+        a1,m1,d1: Segunda fecha.
+
+    Returns:
+        Dias de diferencia (entero).
+    """
+    jd=julian_date(a,m,d,0.0)
+    jd1=julian_date(a1,m1,d1,0.0)
+    f=round(jd1-jd)
+    return f
+
+def day_of_week(a,m,d):
+    """
+    Calcula el día de la semana.
+
+    Args:
+        a,m,d: Fecha gregoriana.
+
+    Returns:
+        Dia de la semana, como un entero del 1 al 7.
+    """
+    return round(julian_date(a,m,d,0)+0.5)%7+1
+
+def week_day_name(d):
+    """
+    Devuelve el ldia del nombre de la semana.
+
+    Args:
+        d: Día de la semana.
+
+    Returns:
+        El nombre del día.
+    """
+    dl=["Lunes","Martes","Miercoles","Jueves","Viernes","Sábado","Domingo"]
+    return dl[d-1]
+
+
+
 if __name__ == "__main__":
     rec = [1, 0, -1]
     print("Rectangular coordinates: ", rec)
